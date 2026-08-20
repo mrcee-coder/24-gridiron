@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#06110d"/>
+<meta name="description" content="Official 24 Gridiron founding ballot."/>
+<title>24 Gridiron — Founding Ballot</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="./site.css"/>
+<link rel="stylesheet" href="./vote.css"/>
+</head>
+<body class="vote-page">
+<a class="skip" href="#ballotApp">Skip to ballot</a>
+<div class="noise"></div>
+<header class="top vote-top">
+<a class="brand" href="./"><span class="crest"><b>24</b></span><span><strong>24 GRIDIRON</strong><small>OFFICIAL FOUNDING BALLOT</small></span></a>
+<a class="sleeper-link" href="./">← League headquarters</a>
+</header>
+<main class="vote-shell" id="ballotApp">
+<section class="vote-panel">
+<div class="vote-progress"><div><span id="progressLabel">Identity</span><b id="progressCount">0 / 6</b></div><div class="vote-progress-track"><i id="progressBar"></i></div></div>
+
+<section class="vote-stage active" data-stage="identity">
+<span class="tiny">Before you vote</span>
+<h1>Claim your ballot.</h1>
+<p class="vote-dek">Enter your name and the unique code printed on your ticket. The code can be used for one manager only, but you can return and update your answers while voting remains open.</p>
+<label class="field"><span>Your name</span><input id="managerName" autocomplete="name" maxlength="60" placeholder="First and last name"/></label>
+<label class="field"><span>Ticket voting code</span><input id="accessCode" autocomplete="one-time-code" autocapitalize="characters" maxlength="12" placeholder="Example: H7K4-P9"/></label>
+<div class="vote-callout"><b>Why the code?</b><p>It prevents duplicate ballots without forcing everyone to make another account.</p></div>
+<button class="cta vote-next" id="beginVote">Begin official ballot →</button>
+</section>
+
+<section class="vote-stage" data-key="buyin">
+<span class="tiny">Question 1 • Money</span><h2>How much should the buy-in be?</h2><p>Illustrative 12-team examples use a 60% / 30% / 10% payout split for first, second and third.</p>
+<div class="vote-options five"><button data-v="0"><b>$0</b><small>Bragging rights</small></button><button data-v="25"><b>$25</b><small>$300 pot</small></button><button data-v="50"><b>$50</b><small>$600 pot</small></button><button data-v="75"><b>$75</b><small>$900 pot</small></button><button data-v="100"><b>$100</b><small>$1,200 pot</small></button></div>
+<div class="summary" id="moneySummary">Choose an amount to see the payout example.</div>
+</section>
+
+<section class="vote-stage" data-key="trade">
+<span class="tiny">Question 2 • Trade market</span><h2>Should completed trades cost money?</h2><p>This is a real-money transaction fee added to the league pot, not keeper or draft cost.</p>
+<div class="vote-options three"><button data-v="none"><b>No fee</b><small>Frictionless trading</small></button><button data-v="1"><b>$1</b><small>Small pot contribution</small></button><button data-v="5"><b>$5</b><small>Meaningful friction</small></button></div>
+</section>
+
+<section class="vote-stage" data-key="slot">
+<span class="tiny">Question 3 • Draft</span><h2>Allow one complete draft-position swap?</h2><p>A manager could swap an entire snake-draft position with another manager before the draft. This is not individual-pick dealing.</p>
+<div class="vote-options two"><button data-v="yes"><b>Yes</b><small>One full-slot swap</small></button><button data-v="no"><b>No</b><small>Draft order stays final</small></button></div>
+</section>
+
+<section class="vote-stage" data-key="future">
+<span class="tiny">Question 4 • Future draft capital</span><h2>How much future-pick trading should be allowed?</h2>
+<div class="vote-options three"><button data-v="none"><b>None</b><small>No future picks traded</small></button><button data-v="limited"><b>Limited</b><small>One trade • next season only</small></button><button data-v="open"><b>Open</b><small>Broader future-pick market</small></button></div>
+</section>
+
+<section class="vote-stage" data-key="side">
+<span class="tiny">Question 5 • Side games</span><h2>How should side games be rewarded?</h2>
+<div class="vote-options three"><button data-v="brag"><b>Bragging rights</b><small>No money</small></button><button data-v="fixed"><b>Fixed prizes</b><small>Separate awards</small></button><button data-v="share"><b>Pot share</b><small>A defined slice of the league pot</small></button></div>
+</section>
+
+<section class="vote-stage" data-key="keeper">
+<span class="tiny">Question 6 • Keeper acknowledgment</span><h2>Year 1 keeper system</h2><p>One keeper per team; originally drafted Round 5 or later; undrafted players are ineligible; keeper cost moves one round earlier each season and follows the player through trades. The exact Round-4 expiration language is still being finalized before draft night.</p>
+<div class="vote-options two"><button data-v="understood"><b>Understood</b><small>I will draft with this in mind</small></button><button data-v="flag"><b>Flag it</b><small>I see an edge case to discuss</small></button></div>
+</section>
+
+<section class="vote-stage" data-stage="review">
+<span class="tiny">Final review</span><h2>Submit your official ballot.</h2><p>Review your selections below. Your ticket code identifies this ballot. If voting is still open, submitting again with the same name and code updates your existing ballot rather than creating a duplicate.</p>
+<div class="review-list" id="reviewList"></div>
+<label class="check"><input type="checkbox" id="confirmVote"/><span>I understand these answers will be recorded as my official 24 Gridiron founding ballot.</span></label>
+<div class="submit-status" id="submitStatus" aria-live="polite"></div>
+<button class="cta" id="submitVote">Submit official vote →</button>
+</section>
+
+<section class="vote-stage" data-stage="success">
+<span class="tiny">Ballot recorded</span><h2>Your vote is in.</h2><p id="receiptText">Your official founding ballot has been recorded.</p>
+<div class="receipt" id="receipt"></div>
+<div class="success-actions"><a class="cta" href="https://sleeper.com/i/m7mPK0jWYwZOK" rel="noopener" target="_blank">Join league on Sleeper ↗</a><a class="cta ghost" href="./">Return to headquarters</a></div>
+</section>
+
+<div class="vote-nav" id="voteNav"><button id="prevQuestion">← Back</button><button class="cta" id="nextQuestion">Next question →</button></div>
+</section>
+</main>
+<script defer src="./vote.js"></script>
+</body>
+</html>
