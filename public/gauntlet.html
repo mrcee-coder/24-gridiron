@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#06110d"/>
+<meta name="description" content="Gridiron Gauntlet — the 24 Gridiron endless-run arcade challenge."/>
+<title>Gridiron Gauntlet — 24 Gridiron</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="./site.css?v=5"/>
+<link rel="stylesheet" href="./gauntlet.css?v=1"/>
+</head>
+<body class="gauntlet-page">
+<div class="noise"></div>
+<header class="top gauntlet-top">
+<a class="brand" href="./"><span class="crest"><b>24</b></span><span><strong>24 GRIDIRON</strong><small>GRIDIRON GAUNTLET</small></span></a>
+<nav class="nav"><a href="./games.html">Side Games</a><a href="./draft-night.html">Draft Night</a><a href="./">Headquarters</a></nav>
+</header>
+<main class="gauntlet-shell">
+<section class="gauntlet-intro">
+<div><span class="tiny">Arcade challenge • endless run</span><h1>GRIDIRON<br/><em>GAUNTLET</em></h1><p>One ball carrier. An endless field. Defenders keep coming and the pace keeps climbing. Your best verified run lives on the league leaderboard.</p></div>
+<div class="gauntlet-rules"><b>HOW TO RUN IT</b><p><strong>Phone:</strong> drag left or right anywhere on the field. <strong>Keyboard:</strong> arrows or A / D. Stay in bounds. Touch a defender and the run is over.</p></div>
+</section>
+<section class="arcade-layout">
+<div class="arcade-machine">
+<div class="score-strip"><div><span>RUN</span><b id="runYards">0 YD</b></div><div><span>BEST</span><b id="personalBest">--</b></div><div><span>PACE</span><b id="paceLabel">ROOKIE</b></div></div>
+<div class="canvas-wrap" id="canvasWrap">
+<canvas id="game" width="420" height="720" aria-label="Gridiron Gauntlet game field"></canvas>
+<div class="game-overlay" id="identityOverlay">
+<div class="overlay-card"><span class="tiny">Official league run</span><h2>Claim the ball.</h2><p>Use the same name and ticket code you used for the founding ballot. Your best run is saved to the league leaderboard.</p>
+<label><span>Your name</span><input id="playerName" autocomplete="name" maxlength="60" placeholder="First and last name"/></label>
+<label><span>Ticket code</span><input id="playerCode" autocomplete="one-time-code" autocapitalize="characters" maxlength="12" placeholder="Ticket code"/></label>
+<label class="remember"><input type="checkbox" id="rememberDevice" checked/><span>Remember me on this device</span></label>
+<button class="cta" id="enterGame">Enter the Gauntlet →</button><div id="identityStatus" class="game-status" aria-live="polite"></div></div>
+</div>
+<div class="game-overlay hidden" id="readyOverlay"><div class="overlay-card compact"><span class="tiny" id="welcomeLine">24 Gridiron</span><h2>Find the lane.</h2><p>The field gets faster the farther you go. There is no finish line.</p><button class="cta" id="startRun">Start run →</button><button class="text-button" id="changeIdentity">Change player</button><div id="startStatus" class="game-status" aria-live="polite"></div></div></div>
+<div class="game-overlay hidden" id="tackleOverlay"><div class="overlay-card compact"><span class="tiny">Run over</span><h2 id="tackleTitle">TACKLED.</h2><div class="run-result"><b id="finalYards">0</b><span>yards</span></div><p id="resultLine">Score submitted.</p><button class="cta" id="runAgain">Run it again →</button><a class="text-button link-button" href="./games.html">Back to Side Games</a></div></div>
+</div>
+<div class="control-note"><span>DRAG / SWIPE</span><i></i><span>A / D OR ARROWS</span></div>
+</div>
+<aside class="gauntlet-board">
+<div class="board-head"><div><span class="tiny">League record board</span><h2>Longest Runs</h2></div><button class="refresh-board" id="refreshBoard">Refresh</button></div>
+<div class="gauntlet-leaders" id="gauntletLeaders"><div class="board-empty">No official runs yet. Somebody has to set the first number.</div></div>
+<div class="record-note"><b>What counts?</b><p>Only runs started through this page and completed in one continuous session are accepted. The server checks run timing before a score reaches the board.</p></div>
+</aside>
+</section>
+<section class="gauntlet-footer"><span class="tiny">Side Game 02</span><h2>Simple enough to explain in ten seconds.</h2><p>Go farther than everyone else. That is the whole game.</p><a class="cta ghost" href="./games.html">See all Side Games →</a></section>
+</main>
+<script defer src="./gauntlet.js?v=1"></script>
+</body>
+</html>
