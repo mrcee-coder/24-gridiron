@@ -1,0 +1,8 @@
+.steps{grid-template-columns:repeat(4,1fr)}
+.mini-real{position:absolute;z-index:4;bottom:-4px;width:clamp(190px,20vw,320px);height:auto;object-fit:contain;filter:drop-shadow(0 30px 26px #000b);pointer-events:none;user-select:none}
+.hero-real-left{left:clamp(-18px,1.2vw,24px);transform:rotate(-4deg)}
+.hero-real-right{right:clamp(-18px,1.2vw,24px);transform:rotate(4deg)}
+.game .cta{margin-top:18px}.card strong{color:var(--gold)}
+@media(max-width:1080px){.steps{grid-template-columns:repeat(2,1fr)}.step:nth-child(2){border-right:0}.mini-real{width:clamp(175px,23vw,235px);opacity:.92}.hero-real-left{left:-28px}.hero-real-right{right:-28px}}
+@media(max-width:700px){.steps{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.step:last-child{border-bottom:0}.hero-v2{min-height:690px}.hero-inner{min-height:690px;padding:84px 24px 180px}.mini-real{display:block;width:128px;bottom:20px;opacity:.96;z-index:4}.hero-real-left{left:-18px;transform:rotate(-6deg)}.hero-real-right{right:-18px;transform:rotate(6deg)}}
+@media(max-width:420px){.mini-real{width:112px;bottom:28px}.hero-real-left{left:-24px}.hero-real-right{right:-24px}.hero-inner{padding-bottom:165px}}
