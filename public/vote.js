@@ -2,7 +2,7 @@
   const SUPABASE_URL='https://rcaeofytdbuzejdkybcq.supabase.co';
   const SUPABASE_KEY='sb_publishable_AwEpAG3KIfBUCVJtwgrevg_ON-W5y_w';
   const stages=[...document.querySelectorAll('.vote-stage')];
-  const questionStages=stages.filter(s=>s.dataset.key);
+  const flowStages=stages.filter(s=>s.dataset.section);
   const nav=document.querySelector('#voteNav');
   const next=document.querySelector('#nextQuestion');
   const prev=document.querySelector('#prevQuestion');
@@ -20,65 +20,20 @@
   const receiptText=document.querySelector('#receiptText');
   const answers={};
   let step=-1;
-  const labels={buyin:'Buy-in',trade:'Trade fee',slot:'Draft-position swap',future:'Future picks',side:'Side-game rewards',keeper:'Keeper acknowledgment'};
-  const pretty={
-    buyin:{'0':'$0','25':'$25','50':'$50','75':'$75','100':'$100'},
-    trade:{none:'No trade fee','1':'$1 per trade','5':'$5 per trade'},
-    slot:{yes:'Allow one full-slot swap',no:'No draft-position swaps'},
-    future:{none:'No future picks',limited:'Limited: one trade / next season',open:'Open future-pick market'},
-    side:{brag:'Bragging rights',fixed:'Fixed prizes',share:'League-pot share'},
-    keeper:{understood:'Understood',flag:'Flag an edge case'}
-  };
+  const labels={buyin:'League buy-in',payout:'Championship payout',trade_fee:'Trade fee',trade_review:'Trade review',trade_deadline:'Trade deadline',future_picks:'Future-pick trading',future_dues:'Future dues',slot_swap:'Draft-position swap',lineup_rule:'Inactive-lineup rule',amend_threshold:'Constitution threshold',playoff_teams:'Playoff teams',playoff_seeding:'Playoff seeding',tiebreaker:'Standings tiebreaker',keeper_deadline:'Keeper deadline',keeper_injury:'Keeper injury',keeper_collision:'Keeper/pick collision',keeper_round4:'Round-4 keeper rule',side_rewards:'Side-game rewards'};
+  const pretty={buyin:{'0':'$0','25':'$25','50':'$50','75':'$75','100':'$100'},payout:{'60_30_10':'60 / 30 / 10','70_20_10':'70 / 20 / 10','80_15_5':'80 / 15 / 5'},trade_fee:{none:'No fee','1':'$1','5':'$5'},trade_review:{commish_collusion:'Commissioner: collusion/rule circumvention only',league_veto:'League veto',no_review:'No review'},trade_deadline:{week10:'Week 10',week11:'Week 11',week12:'Week 12'},future_picks:{none:'No future picks',limited:'Limited: one trade / next season only',open:'Open market'},future_dues:{prepay:'Prepay next season before trading future picks',no_prepay:'No prepayment'},slot_swap:{yes:'Allow one complete draft-position swap',no:'No draft-position swaps'},lineup_rule:{warn_then_penalty:'Warning, then penalty',commissioner_fix:'Commissioner may fix obvious inactive slot',no_formal_penalty:'No formal penalty'},amend_threshold:{majority:'Simple majority',two_thirds:'Two-thirds',seventy_five:'75%'},playoff_teams:{'4':'4 teams','6':'6 teams','8':'8 teams'},playoff_seeding:{fixed:'Fixed bracket',reseed:'Reseed each round'},tiebreaker:{points_for:'Points For',head_to_head:'Head-to-head',all_play:'All-play record'},keeper_deadline:{'3_days':'3 days before draft','7_days':'7 days before draft','14_days':'14 days before draft'},keeper_injury:{locked:'Keeper remains locked',release_no_replacement:'Release keeper; regain pick; no replacement',reselect:'Allow replacement keeper'},keeper_collision:{next_earlier:'Use next earlier available pick',ineligible:'Keeper becomes ineligible'},keeper_round4:{final_round4:'One final season at Round 4',expires_before_round4:'Expires before Round 4',continue_to_round1:'Continue escalating through Round 1'},side_rewards:{brag:'Bragging rights',fixed:'Fixed prizes',share:'League-pot share'}};
   function show(target){stages.forEach(s=>s.classList.toggle('active',s===target));window.scrollTo({top:0,behavior:'smooth'});}
-  function updateProgress(){
-    if(step<0){progressLabel.textContent='Identity';progressCount.textContent='0 / 6';progressBar.style.width='0%';nav.classList.remove('show');return;}
-    if(step<questionStages.length){progressLabel.textContent=`Question ${step+1}`;progressCount.textContent=`${step+1} / 6`;progressBar.style.width=`${((step+1)/6)*100}%`;nav.classList.add('show');next.textContent=step===questionStages.length-1?'Review ballot →':'Next question →';prev.style.visibility='visible';return;}
-    progressLabel.textContent='Review';progressCount.textContent='6 / 6';progressBar.style.width='100%';nav.classList.remove('show');
-  }
-  function selectStage(i){step=i;show(questionStages[i]);updateProgress();}
   function normalizeCode(v){return v.trim().toUpperCase().replace(/\s+/g,'');}
-  begin.addEventListener('click',()=>{
-    const n=nameInput.value.trim(); const c=normalizeCode(codeInput.value);
-    if(n.length<2){nameInput.focus();return;}
-    if(c.length<4){codeInput.focus();return;}
-    codeInput.value=c; selectStage(0);
-  });
-  questionStages.forEach(stage=>{
-    stage.querySelectorAll('.vote-options button').forEach(btn=>btn.addEventListener('click',()=>{
-      stage.querySelectorAll('.vote-options button').forEach(b=>b.classList.remove('selected'));
-      btn.classList.add('selected');answers[stage.dataset.key]=btn.dataset.v;
-      if(stage.dataset.key==='buyin'){
-        const n=Number(btn.dataset.v),pot=n*12;
-        document.querySelector('#moneySummary').textContent=n?`Illustrative 12-team pot: $${pot} • 1st $${pot*.6} • 2nd $${pot*.3} • 3rd $${pot*.1}`:'No cash pot — bragging rights only.';
-      }
-    }));
-  });
-  next.addEventListener('click',()=>{
-    const key=questionStages[step].dataset.key;
-    if(!answers[key]){questionStages[step].querySelector('.vote-options button')?.focus();return;}
-    if(step<questionStages.length-1){selectStage(step+1);}else{renderReview();show(document.querySelector('[data-stage="review"]'));step=questionStages.length;updateProgress();}
-  });
+  function updateProgress(){if(step<0){progressLabel.textContent='Identity';progressCount.textContent='Start';progressBar.style.width='0%';nav.classList.remove('show');return;}if(step<flowStages.length){progressLabel.textContent=flowStages[step].dataset.section;progressCount.textContent=`${step+1} / ${flowStages.length}`;progressBar.style.width=`${((step+1)/flowStages.length)*100}%`;nav.classList.add('show');next.textContent=step===flowStages.length-1?'Review ballot →':'Continue →';prev.style.visibility='visible';return;}progressLabel.textContent='Review';progressCount.textContent='Complete';progressBar.style.width='100%';nav.classList.remove('show');}
+  function selectStage(i){step=i;show(flowStages[i]);updateProgress();}
+  begin.addEventListener('click',()=>{const n=nameInput.value.trim();const c=normalizeCode(codeInput.value);if(n.length<2){nameInput.focus();return;}if(c.length<4){codeInput.focus();return;}codeInput.value=c;selectStage(0);});
+  document.querySelectorAll('.question-block').forEach(block=>{const key=block.dataset.key;block.querySelectorAll('.vote-options button').forEach(btn=>btn.addEventListener('click',()=>{block.querySelectorAll('.vote-options button').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');answers[key]=btn.dataset.v;}));});
+  function currentStageComplete(){const stage=flowStages[step];for(const block of stage.querySelectorAll('.question-block')){if(!answers[block.dataset.key]){block.scrollIntoView({behavior:'smooth',block:'center'});block.querySelector('button')?.focus();return false;}}for(const input of stage.querySelectorAll('[data-profile]')){if(!input.value.trim()){input.focus();return false;}}return true;}
+  next.addEventListener('click',()=>{if(!currentStageComplete())return;if(step<flowStages.length-1){selectStage(step+1);}else{renderReview();show(document.querySelector('[data-stage="review"]'));step=flowStages.length;updateProgress();}});
   prev.addEventListener('click',()=>{if(step>0)selectStage(step-1);else{step=-1;show(document.querySelector('[data-stage="identity"]'));updateProgress();}});
-  function renderReview(){
-    review.innerHTML=questionStages.map(s=>`<div class="review-row"><span>${labels[s.dataset.key]}</span><b>${pretty[s.dataset.key][answers[s.dataset.key]]||answers[s.dataset.key]}</b></div>`).join('');
-  }
-  async function submitVote(){
-    status.className='submit-status';status.textContent='';
-    if(!confirm.checked){status.classList.add('error');status.textContent='Confirm that this is your official ballot before submitting.';return;}
-    submit.disabled=true;submit.textContent='Recording vote…';
-    try{
-      const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/gridiron_submit_vote`,{
-        method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},
-        body:JSON.stringify({p_manager_name:nameInput.value.trim(),p_access_code:normalizeCode(codeInput.value),p_answers:answers})
-      });
-      const payload=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(payload.message||payload.error||'Vote could not be recorded.');
-      const when=payload.submitted_at?new Date(payload.submitted_at):new Date();
-      receiptText.textContent=`Thanks, ${payload.manager||nameInput.value.trim()}. Your official founding ballot has been recorded.`;
-      receipt.innerHTML=`<b>24 Gridiron founding ballot</b><br>Recorded: ${when.toLocaleString()}<br>Ticket code: ${normalizeCode(codeInput.value).replace(/.(?=.{3})/g,'•')}`;
-      show(document.querySelector('[data-stage="success"]'));progressLabel.textContent='Recorded';progressCount.textContent='Complete';progressBar.style.width='100%';nav.classList.remove('show');
-    }catch(err){status.classList.add('error');status.textContent=String(err.message||err).replace('Invalid manager name or access code','That name/code combination is not valid. Check the ticket and try again.');submit.disabled=false;submit.textContent='Submit official vote →';}
-  }
-  submit.addEventListener('click',submitVote);
-  updateProgress();
+  function getProfile(){const profile={};document.querySelectorAll('[data-profile]').forEach(input=>profile[input.dataset.profile]=input.value.trim());return profile;}
+  function escapeHtml(v){return String(v||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+  function renderReview(){const rows=Object.keys(labels).map(key=>`<div class="review-row"><span>${labels[key]}</span><b>${pretty[key]?.[answers[key]]||answers[key]||'—'}</b></div>`).join('');const p=getProfile();const profileRows=`<div class="review-divider">Manager profile</div>`+[['Favorite NFL team',p.favorite_team],['Favorite player ever',p.favorite_player],['Irrational fantasy love',p.irrational_love],['Never draft',p.never_draft],['Fantasy weakness',p.fantasy_weakness],['Game-day food',p.game_day_food],['Walk-up song',p.walkup_song],['Hot take',p.hot_take]].map(([k,v])=>`<div class="review-row"><span>${k}</span><b>${escapeHtml(v)}</b></div>`).join('');review.innerHTML=rows+profileRows;}
+  async function submitVote(){status.className='submit-status';status.textContent='';if(!confirm.checked){status.classList.add('error');status.textContent='Confirm that this is your official ballot before submitting.';return;}submit.disabled=true;submit.textContent='Recording ballot…';try{const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/gridiron_submit_vote_v2`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},body:JSON.stringify({p_manager_name:nameInput.value.trim(),p_access_code:normalizeCode(codeInput.value),p_answers:answers,p_profile:getProfile()})});const payload=await response.json().catch(()=>({}));if(!response.ok)throw new Error(payload.message||payload.error||'Ballot could not be recorded.');const when=payload.submitted_at?new Date(payload.submitted_at):new Date();receiptText.textContent=`Thanks, ${payload.manager||nameInput.value.trim()}. Your founding ballot and manager profile are recorded.`;receipt.innerHTML=`<b>24 Gridiron founding ballot</b><br>Recorded: ${when.toLocaleString()}<br>Ticket code: ${normalizeCode(codeInput.value).replace(/.(?=.{3})/g,'•')}`;show(document.querySelector('[data-stage="success"]'));progressLabel.textContent='Recorded';progressCount.textContent='Complete';progressBar.style.width='100%';nav.classList.remove('show');}catch(err){const msg=String(err.message||err);status.classList.add('error');status.textContent=msg.includes('already assigned')?'That ticket code has already been claimed by another manager.':msg.includes('Invalid ticket code')?'That ticket code is not valid. Check the ticket and try again.':msg.includes('Ballot is closed')?'Voting is currently closed.':msg.includes('Invalid ballot')||msg.includes('Invalid profile')?'Something in the ballot did not validate. Review your answers and try again.':msg;submit.disabled=false;submit.textContent='Submit official ballot →';}}
+  submit.addEventListener('click',submitVote);updateProgress();
 })();
