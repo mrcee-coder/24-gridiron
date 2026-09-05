@@ -27,10 +27,10 @@
 <div class="canvas-wrap" id="canvasWrap">
 <canvas id="game" width="420" height="720" aria-label="Gridiron Gauntlet game field"></canvas>
 <div class="game-overlay" id="identityOverlay">
-<div class="overlay-card"><span class="tiny">Official league run</span><h2>Claim the ball.</h2><p>Use the same name and ticket code you used for the founding ballot. Your best run is saved to the league leaderboard.</p>
-<label><span>Your name</span><input id="playerName" autocomplete="name" maxlength="60" placeholder="First and last name"/></label>
-<label><span>Ticket code</span><input id="playerCode" autocomplete="one-time-code" autocapitalize="characters" maxlength="12" placeholder="Ticket code"/></label>
-<label class="remember"><input type="checkbox" id="rememberDevice" checked/><span>Remember me on this device</span></label>
+<div class="overlay-card"><span class="tiny">Official league run</span><h2>Claim the ball.</h2><p>Use the same name you use everywhere else on 24 Gridiron. This device remembers it automatically.</p>
+<label><span>Your 24 Gridiron name</span><input id="playerName" autocomplete="name" maxlength="60" placeholder="First and last name"/></label>
+<input id="playerCode" type="hidden" value="OPEN"/>
+<input type="checkbox" id="rememberDevice" checked hidden/>
 <button class="cta" id="enterGame">Enter the Gauntlet →</button><div id="identityStatus" class="game-status" aria-live="polite"></div></div>
 </div>
 <div class="game-overlay hidden" id="readyOverlay"><div class="overlay-card compact"><span class="tiny" id="welcomeLine">24 Gridiron</span><h2>Find the lane.</h2><p>The field gets faster the farther you go. There is no finish line.</p><button class="cta" id="startRun">Start run →</button><button class="text-button" id="changeIdentity">Change player</button><div id="startStatus" class="game-status" aria-live="polite"></div></div></div>
@@ -46,6 +46,7 @@
 </section>
 <section class="gauntlet-footer"><span class="tiny">Side Game 02</span><h2>Simple enough to explain in ten seconds.</h2><p>Go farther than everyone else. That is the whole game.</p><a class="cta ghost" href="./games.html">See all Side Games →</a> <a class="cta ghost" href="./">Back to headquarters</a></section>
 </main>
-<script defer src="./gauntlet.js?v=1"></script>
+<script defer src="./identity.js?v=1"></script>
+<script defer src="./gauntlet.js?v=2"></script>
 </body>
 </html>
