@@ -1,0 +1,16 @@
+{
+  "name": "24-gridiron",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "video:data": "node video/fetch-sleeper.mjs",
+    "video:score": "node video/generate-score.mjs",
+    "video:render": "remotion render video/src/index.jsx DraftReveal public/draft-reveal-2026.mp4 --public-dir video/public --codec h264 --crf 24 --audio-codec aac"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.390",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "remotion": "^4.0.390"
+  }
+}
