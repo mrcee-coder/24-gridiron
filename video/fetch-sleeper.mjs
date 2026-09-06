@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const LEAGUE='1395507776981069824';
+const base='https://api.sleeper.app/v1';
+const get=async p=>{const r=await fetch(base+p);if(!r.ok)throw new Error(`${p}: ${r.status}`);return r.json()};
+const [users,drafts]=await Promise.all([get(`/league/${LEAGUE}/users`),get(`/league/${LEAGUE}/drafts`)]);
+const draft=drafts.find(d=>String(d.season)==='2026')||drafts[0];
+if(!draft?.draft_order||Object.keys(draft.draft_order).length!==12)throw new Error('Official 12-slot Sleeper draft order is not available yet.');
+const byId=Object.fromEntries(users.map(u=>[u.user_id,u]));
+const teams=Object.entries(draft.draft_order).map(([id,pick])=>{const u=byId[id]||{};return {pick:Number(pick),userId:id,name:u.metadata?.team_name||u.display_name||u.username||'Manager',username:u.username||u.display_name||''}}).sort((a,b)=>a.pick-b.pick);
+fs.mkdirSync('video/public',{recursive:true});
+fs.writeFileSync('video/public/order.json',JSON.stringify({leagueId:LEAGUE,draftId:draft.draft_id,capturedAt:new Date().toISOString(),teams},null,2));
+console.log(`Captured ${teams.length} official Sleeper draft slots.`);
