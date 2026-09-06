@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+// Official Sleeper data is captured at render time so the video cannot drift from the league.
 const LEAGUE='1395507776981069824';
 const base='https://api.sleeper.app/v1';
 const get=async p=>{const r=await fetch(base+p);if(!r.ok)throw new Error(`${p}: ${r.status}`);return r.json()};
