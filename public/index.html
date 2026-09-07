@@ -8,28 +8,17 @@
 <style>html,body{margin:0;min-height:100%;background:#06110d;color:#efe4cc;font-family:Georgia,serif}body{display:grid;place-items:center}.route{padding:32px;text-align:center;opacity:.72}.route b{display:block;font-size:30px;margin-bottom:8px}.route span{font-size:12px;letter-spacing:.12em;text-transform:uppercase}</style>
 </head>
 <body>
-<div class="route"><b>24 GRIDIRON</b><span>Opening your locker…</span></div>
+<div class="route"><b>24 GRIDIRON</b><span>Opening the stadium…</span></div>
 <script>
-(async()=>{
-  const SUPA='https://rcaeofytdbuzejdkybcq.supabase.co';
-  const KEY='sb_publishable_AwEpAG3KIfBUCVJtwgrevg_ON-W5y_w';
+(()=>{
+  let seen=false;
+  try{seen=localStorage.getItem('g24_intro_2026_seen')==='1'}catch{}
+  if(!seen){location.replace('./premiere.html');return}
   let name='';
   try{name=localStorage.getItem('g24_member_name')||localStorage.getItem('g24_name')||''}catch{}
-  if(!name){location.replace('./draft-table.html');return}
-  try{
-    const r=await fetch(`${SUPA}/rest/v1/rpc/gridiron_draft_prediction_card`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':KEY},
-      body:JSON.stringify({p_member_name:name})
-    });
-    if(!r.ok)throw new Error('route lookup failed');
-    const card=await r.json();
-    location.replace(card&&card.found?'./home.html':'./draft-table.html');
-  }catch{
-    location.replace('./home.html');
-  }
+  location.replace(name?'./home.html':'./draft-table.html');
 })();
 </script>
-<noscript><a href="./home.html" style="color:#efe4cc">Open the Locker Room</a></noscript>
+<noscript><a href="./premiere.html" style="color:#efe4cc">Open 24 Gridiron</a></noscript>
 </body>
 </html>
