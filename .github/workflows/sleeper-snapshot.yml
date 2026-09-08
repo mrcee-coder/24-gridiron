@@ -1,0 +1,32 @@
+name: Sleeper Snapshot
+on:
+  push:
+    paths:
+      - '.github/workflows/sleeper-snapshot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull live Sleeper league data
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.sleeper.app/v1'
+          league='1395507776981069824'
+          curl -fsSL "$base/league/$league/users" -o users.json
+          curl -fsSL "$base/league/$league/drafts" -o drafts.json
+          curl -fsSL "$base/league/$league/rosters" -o rosters.json
+          node <<'NODE'
+          const fs=require('fs');
+          const users=JSON.parse(fs.readFileSync('users.json'));
+          const drafts=JSON.parse(fs.readFileSync('drafts.json'));
+          const rosters=JSON.parse(fs.readFileSync('rosters.json'));
+          const draft=drafts.find(d=>String(d.season)==='2026')||drafts[0];
+          const byId=Object.fromEntries(users.map(u=>[u.user_id,{user_id:u.user_id,username:u.username,display_name:u.display_name,team_name:u.metadata?.team_name||''}]));
+          console.log('USERS',JSON.stringify(users.map(u=>byId[u.user_id])));
+          console.log('DRAFT',JSON.stringify({draft_id:draft?.draft_id,status:draft?.status,draft_order:draft?.draft_order||{},slot_to_roster_id:draft?.slot_to_roster_id||{}}));
+          console.log('ROSTERS',JSON.stringify(rosters.map(r=>({roster_id:r.roster_id,owner_id:r.owner_id,co_owners:r.co_owners||[],owner:byId[r.owner_id]||null}))));
+          NODE
