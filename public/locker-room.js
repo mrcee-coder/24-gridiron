@@ -1,1 +1,35 @@
-(()=>{const $=s=>document.querySelector(s),LEAGUE='1395507776981069824';const name=window.G24Identity?.get?.()||localStorage.getItem('g24_member_name')||'',sleeper=localStorage.getItem('g24_sleeper_name')||'';if($('#lockerIdentity'))$('#lockerIdentity').textContent=name?`Locker: ${name}`:'Visitor locker';function tone(freq=100,dur=.12,type='triangle',gain=.05){try{const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(freq,a.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(40,freq*.72),a.currentTime+dur);g.gain.setValueAtTime(.0001,a.currentTime);g.gain.exponentialRampToValueAtTime(gain,a.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+dur);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+dur+.02)}catch{}}document.querySelectorAll('.locker').forEach(locker=>{locker.addEventListener('mouseenter',()=>tone(72,.08,'square',.025));locker.addEventListener('focus',()=>tone(82,.07,'square',.02));locker.addEventListener('click',()=>{tone(110,.16,'sawtooth',.06);const flash=document.createElement('div');flash.className='locker-open-flash';document.body.appendChild(flash);setTimeout(()=>flash.remove(),340)})});function countdown(){const el=$('#draftCountdown');if(!el)return;const target=new Date('2026-09-08T15:00:00-07:00').getTime(),now=Date.now(),d=target-now;if(d<=0){el.textContent='Draft: live now';return}const h=Math.floor(d/36e5),m=Math.floor((d%36e5)/6e4);el.textContent=`Draft in ${h}h ${m}m`}countdown();setInterval(countdown,60000);async function draftSlot(){const status=$('#draftStatus'),copy=$('#practiceCopy');if(!status)return;try{const [users,drafts]=await Promise.all([fetch(`https://api.sleeper.app/v1/league/${LEAGUE}/users`).then(r=>r.ok?r.json():Promise.reject()),fetch(`https://api.sleeper.app/v1/league/${LEAGUE}/drafts`).then(r=>r.ok?r.json():Promise.reject())]);const draft=Array.isArray(drafts)?drafts.find(d=>String(d?.season)==='2026'&&d?.draft_order&&Object.keys(d.draft_order).length)||drafts.find(d=>String(d?.season)==='2026')||null:null;if(!draft?.draft_order){status.textContent='Draft order: set in Sleeper';return}const key=String(sleeper||'').trim().toLowerCase();const u=Array.isArray(users)?users.find(x=>String(x.username||'').trim().toLowerCase()===key||String(x.display_name||'').trim().toLowerCase()===key):null;const slot=u?Number(draft.draft_order[u.user_id]||0):0;if(slot){status.textContent=`Your draft slot: ${slot}`;if(copy)copy.textContent=`You are drafting from the ${slot} slot. Run mock drafts from that exact position, test different openings, and get comfortable with Sleeper's queue, player search and draft board before Draft Day.`}else{status.textContent='Draft order: set';if(copy)copy.textContent='The official 2026 draft order is set in Sleeper. Open Draft Order to verify your position before running mocks.'}}catch{status.textContent='Draft order: set'}}draftSlot()})();
+(()=>{
+  const $=s=>document.querySelector(s);
+  const safeStorage=(key)=>{try{return localStorage.getItem(key)||''}catch{return''}};
+  const name=window.G24Identity?.get?.()||safeStorage('g24_member_name')||safeStorage('g24_name');
+
+  if($('#lockerIdentity')) $('#lockerIdentity').textContent=name?`Locker: ${name}`:'Visitor locker';
+  if($('#draftStatus')) $('#draftStatus').textContent='Draft: complete';
+  if($('#draftCountdown')) $('#draftCountdown').textContent='Week One';
+  if($('#practiceCopy')) $('#practiceCopy').textContent='The draft is complete. From here, the site is the permanent home of the inaugural 24 Gridiron season: games, records, leaderboards, history and whatever evidence the commissioner deems admissible.';
+
+  function tone(freq=100,dur=.12,type='triangle',gain=.05){
+    try{
+      const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();
+      o.type=type;o.frequency.setValueAtTime(freq,a.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(40,freq*.72),a.currentTime+dur);
+      g.gain.setValueAtTime(.0001,a.currentTime);g.gain.exponentialRampToValueAtTime(gain,a.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+dur);
+      o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+dur+.02);
+    }catch{}
+  }
+
+  document.querySelectorAll('.locker').forEach(locker=>{
+    locker.addEventListener('mouseenter',()=>tone(72,.08,'square',.025));
+    locker.addEventListener('focus',()=>tone(82,.07,'square',.02));
+    locker.addEventListener('click',()=>{
+      tone(110,.16,'sawtooth',.06);
+      const flash=document.createElement('div');flash.className='locker-open-flash';document.body.appendChild(flash);setTimeout(()=>flash.remove(),340);
+    });
+  });
+
+  fetch('./sleeper-verified.json',{cache:'no-store'})
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(s=>{
+      if(String(s.status).toLowerCase()==='complete'&&$('#draftStatus')) $('#draftStatus').textContent=`Draft: complete · ${s.picks||180} picks`;
+    })
+    .catch(()=>{});
+})();
