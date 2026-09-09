@@ -26,6 +26,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify official completed 2026 Sleeper draft
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const API = 'https://api.sleeper.app/v1';
+          const LEAGUE = '1395507776981069824';
+          async function get(path){
+            const r = await fetch(API + path);
+            if(!r.ok) throw new Error(`${path} -> ${r.status}`);
+            return r.json();
+          }
+          (async()=>{
+            const [users,drafts] = await Promise.all([
+              get(`/league/${LEAGUE}/users`),
+              get(`/league/${LEAGUE}/drafts`)
+            ]);
+            const draft = (drafts||[]).find(d=>String(d.season)==='2026');
+            if(!draft) throw new Error('No official 2026 Sleeper draft found');
+            const picks = await get(`/draft/${draft.draft_id}/picks`);
+            const orderCount = Object.keys(draft.draft_order||{}).length;
+            if(users.length !== 12) throw new Error(`Expected 12 league users, found ${users.length}`);
+            if(orderCount !== 12) throw new Error(`Expected 12 draft slots, found ${orderCount}`);
+            if(String(draft.status).toLowerCase() !== 'complete') throw new Error(`Draft status is ${draft.status}, not complete`);
+            if(!Array.isArray(picks) || picks.length === 0) throw new Error('Completed draft returned no picks');
+            const snapshot = {
+              league_id: LEAGUE,
+              season: String(draft.season),
+              draft_id: String(draft.draft_id),
+              status: draft.status,
+              teams: users.length,
+              order_slots: orderCount,
+              picks: picks.length,
+              verified_at: new Date().toISOString()
+            };
+            fs.writeFileSync('public/sleeper-verified.json', JSON.stringify(snapshot,null,2)+'\n');
+            console.log(`Sleeper verified: draft ${snapshot.draft_id} · ${snapshot.status} · ${snapshot.picks} picks · ${snapshot.teams}/12 teams · ${snapshot.order_slots}/12 slots`);
+          })().catch(err=>{ console.error(err); process.exit(1); });
+          NODE
+
       - name: Run 100-check QA gate
         run: node scripts/qa.mjs
 
