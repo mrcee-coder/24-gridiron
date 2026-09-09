@@ -88,12 +88,25 @@ jobs:
         run: |
           set -e
           for i in 1 2 3 4 5; do
-            if curl -fsSL --max-time 20 "${SITE_URL}draft-recap.html" -o /tmp/recap.html && \
+            if curl -fsSL --max-time 20 "${SITE_URL}home.html" -o /tmp/home.html && \
+               curl -fsSL --max-time 20 "${SITE_URL}film-room.html" -o /tmp/film-room.html && \
+               curl -fsSL --max-time 20 "${SITE_URL}draft-recap.html" -o /tmp/recap.html && \
                curl -fsSL --max-time 20 "${SITE_URL}sleeper-verified.json" -o /tmp/sleeper.json; then
               break
             fi
             sleep 2
           done
+          grep -q 'ENTER SEASON HQ' /tmp/home.html
+          grep -q 'VIEW LEADERBOARDS' /tmp/home.html
+          grep -q 'film-room.html' /tmp/home.html
+          if grep -q 'href="./draft-recap.html"' /tmp/home.html; then
+            echo 'Post-draft recap is still promoted from homepage' >&2
+            exit 1
+          fi
+          grep -q 'premiere.html' /tmp/film-room.html
+          grep -q 'draft-recap.html' /tmp/film-room.html
+          grep -q 'Opening Film' /tmp/film-room.html
+          grep -q 'The Draft Is Closed' /tmp/film-room.html
           grep -q 'THE DRAFT' /tmp/recap.html
           grep -q 'video/mp4' /tmp/recap.html
           node -e "const s=require('/tmp/sleeper.json'); if(s.status!=='complete'||s.teams!==12||s.order_slots!==12||s.picks!==180) process.exit(1); console.log('Public site verified:', s)"
