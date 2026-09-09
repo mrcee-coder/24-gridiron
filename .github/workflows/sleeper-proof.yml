@@ -1,0 +1,22 @@
+name: Sleeper Post-Draft Proof
+
+on:
+  push:
+    branches:
+      - proof/sleeper-postdraft-2026
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official Sleeper draft proof
+        run: node scripts/sleeper-proof.mjs > sleeper-proof.json
+      - name: Upload proof artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sleeper-postdraft-proof
+          path: sleeper-proof.json
