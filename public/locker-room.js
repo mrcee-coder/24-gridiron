@@ -8,13 +8,6 @@
   if($('#draftCountdown')) $('#draftCountdown').textContent='Week One';
   if($('#practiceCopy')) $('#practiceCopy').textContent='The draft is complete. From here, the site is the permanent home of the inaugural 24 Gridiron season: games, records, leaderboards, history and whatever evidence the commissioner deems admissible.';
 
-  const premiere=$('#postDraftPremiere'),close=$('#closePremiere'),video=$('#premiereVideo');
-  let seen=false;try{seen=localStorage.getItem('g24_postdraft_2026_seen')==='1'}catch{}
-  const dismiss=()=>{try{localStorage.setItem('g24_postdraft_2026_seen','1')}catch{};premiere?.classList.remove('open');video?.pause()};
-  if(premiere&&!seen){premiere.classList.add('open');setTimeout(()=>video?.play().catch(()=>{}),180)}
-  close?.addEventListener('click',dismiss);
-  video?.addEventListener('ended',dismiss);
-
   function tone(freq=100,dur=.12,type='triangle',gain=.05){
     try{
       const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();
