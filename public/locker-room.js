@@ -5,8 +5,10 @@
 
   if($('#lockerIdentity')) $('#lockerIdentity').textContent=name?`Locker: ${name}`:'Visitor locker';
   if($('#draftStatus')) $('#draftStatus').textContent='Draft: complete';
-  if($('#draftCountdown')) $('#draftCountdown').textContent='Week One';
+  if($('#draftCountdown')) $('#draftCountdown').textContent='In season';
   if($('#practiceCopy')) $('#practiceCopy').textContent='The draft is complete. From here, the site is the permanent home of the inaugural 24 Gridiron season: games, records, leaderboards, history and whatever evidence the commissioner deems admissible.';
+
+  fetch('https://api.sleeper.app/v1/league/1395507776981069824',{signal:AbortSignal.timeout(10000)}).then(r=>r.ok?r.json():Promise.reject()).then(l=>{if($('#draftCountdown')) $('#draftCountdown').textContent=`Week ${l.settings.leg} · ${l.status.replaceAll('_',' ')}`;}).catch(()=>{});
 
   function tone(freq=100,dur=.12,type='triangle',gain=.05){
     try{
